@@ -1,0 +1,106 @@
+"TestInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": {
+          "Ref": "ImageId"
+        },
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "IamInstanceProfile": {
+          "Ref": "TransferInstanceProfile"
+        },
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "SecurityScanStackResources",
+              "SecurityScanSecurityGroup"
+            ]
+          },
+          {
+            "Ref": "TransferInstanceSecurityGroup"
+          }
+        ],
+        "SubnetId": {
+          "Fn::GetAtt": [
+            "SandboxBaseStack",
+            "PrivateSubnet1"
+          ]
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "VolumeType": "gp2",
+              "DeleteOnTermination": true,
+              "VolumeSize": "10"
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Sub": "${AWS::StackName}.${AccountStack.AccountZoneDelegation}"
+            }
+          },
+          {
+            "Key": "test",
+            "Value": {
+              "Fn::Join": [
+                ":",
+                [
+                  {
+                    "Fn::Join": [
+                      "=",
+                      [
+                        "cust",
+                        "it"
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      "=",
+                      [
+                        "env",
+                        "eng"
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      "=",
+                      [
+                        "instance",
+                        {
+                          "Ref": "AWS::StackName"
+                        }
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      "=",
+                      [
+                        "role",
+                        "student-ec2"
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      "=",
+                      [
+                        "svc",
+                        "student-ec2"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    }
